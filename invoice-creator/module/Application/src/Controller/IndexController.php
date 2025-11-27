@@ -11,6 +11,7 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        return new ViewModel();
+        // Redirect users from the home page to the login page
+        return $this->redirect()->toRoute('login');
     }
 }

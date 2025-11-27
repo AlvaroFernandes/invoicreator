@@ -21,13 +21,33 @@ return [
                     ],
                 ],
             ],
-            'application' => [
-                'type'    => Segment::class,
+            'login' => [
+                'type'    => Literal::class,
                 'options' => [
-                    'route'    => '/application[/:action]',
+                    'route'    => '/login',
                     'defaults' => [
-                        'controller' => Controller\IndexController::class,
-                        'action'     => 'index',
+                        'controller' => Controller\AuthController::class,
+                        'action'     => 'login',
+                    ],
+                ],
+            ],
+            'register' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/register',
+                    'defaults' => [
+                        'controller' => Controller\AuthController::class,
+                        'action'     => 'register',
+                    ],
+                ],
+            ],
+            'logout' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/logout',
+                    'defaults' => [
+                        'controller' => Controller\AuthController::class,
+                        'action'     => 'logout',
                     ],
                 ],
             ],
@@ -36,6 +56,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
+            Controller\AuthController::class  => InvokableFactory::class,
         ],
     ],
     'view_manager' => [

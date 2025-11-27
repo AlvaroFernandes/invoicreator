@@ -7,7 +7,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <?= $this->headTitle('Laminas MVC Skeleton')->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headTitle('Invoice Creator')->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?= $this->headMeta()
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
@@ -27,11 +27,21 @@
         <?= $this->headScript() ?>
     </head>
     <body>
+        <?php
+        // Determine if a user identity view helper is available and fetch it.
+        $identity = null;
+        try {
+            if (is_callable([$this, 'identity'])) {
+                $identity = $this->identity() ?: null;
+            }
+        } catch (\Throwable $e) {
+            $identity = null;
+        }
+        ?>
         <nav class="navbar navbar-expand-md navbar-dark mb-4" role="navigation">
             <div class="container">
                 <a class="navbar-brand" href="<?= $this->url('home') ?>">
-                    <img src="<?= $this->basePath('img/laminas-logo.svg') ?>" alt="Laminas">
-                    <span class="navbar-text text-light">MVC Skeleton</span>
+                    <span class="navbar-text text-light">Invoice Creator</span>
                 </a>
                 <button
                     class="navbar-toggler"
@@ -46,14 +56,21 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a
-                                class="nav-link active"
-                                aria-current="page"
-                                href="<?= $this->url('home') ?>"
-                            >Home
-                            </a>
-                        </li>
+                        <?php if (empty($identity)): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?= $this->url('login') ?>">Sign in</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?= $this->url('register') ?>">Sign up</a>
+                            </li>
+                        <?php else: ?>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="<?= $this->url('home') ?>">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?= $this->url('logout') ?>">Sign out</a>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </div>
@@ -64,7 +81,7 @@
             <footer>
                 <p>
                     &copy; <?= date('Y') ?>
-                    <a href="https://getlaminas.org/">Laminas Project</a> a Series of LF Projects, LLC.
+                    <a href="https://alvarofernandes.com/">Alvaro Fernandes</a> design and development.
                 </p>
             </footer>
         </div>
