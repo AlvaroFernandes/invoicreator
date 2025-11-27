@@ -63,6 +63,28 @@ return [
         'factories' => [
             // Doctrine DBAL connection service
             'doctrine.connection' => \Application\Factory\ConnectionFactory::class,
+            // Auth service
+            \Application\Service\AuthService::class => \Application\Factory\AuthServiceFactory::class,
+            'Application\AuthService' => \Application\Factory\AuthServiceFactory::class,
+        ],
+    ],
+    'view_helpers' => [
+        'factories' => [
+            'identity' => function ($container) {
+                $sm = $container->getServiceLocator() ?? $container;
+                $auth = $sm->has(\Application\Service\AuthService::class)
+                    ? $sm->get(\Application\Service\AuthService::class)
+                    : ($sm->has('Application\AuthService') ? $sm->get('Application\\AuthService') : null);
+
+                $getIdentity = function () use ($auth) {
+                    if (! $auth) {
+                        return null;
+                    }
+                    return $auth->getIdentity();
+                };
+
+                return new \Application\View\Helper\Identity($getIdentity);
+            },
         ],
     ],
     'view_manager' => [
