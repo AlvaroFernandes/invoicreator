@@ -59,6 +59,12 @@ return [
             Controller\AuthController::class  => InvokableFactory::class,
         ],
     ],
+    'service_manager' => [
+        'factories' => [
+            // Doctrine DBAL connection service
+            'doctrine.connection' => \Application\Factory\ConnectionFactory::class,
+        ],
+    ],
     'view_manager' => [
         'display_not_found_reason' => true,
         'display_exceptions'       => true,
