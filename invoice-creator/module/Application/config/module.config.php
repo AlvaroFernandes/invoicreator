@@ -61,6 +61,20 @@ return [
                     ],
                 ],
             ],
+            'clients' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/clients[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ClientsController::class,
+                        'action' => 'index',
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [
@@ -68,6 +82,7 @@ return [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\AuthController::class  => InvokableFactory::class,
             Controller\DashboardController::class => InvokableFactory::class,
+            Controller\ClientsController::class => InvokableFactory::class,
         ],
     ],
     'service_manager' => [

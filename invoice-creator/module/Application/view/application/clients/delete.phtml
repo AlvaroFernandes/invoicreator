@@ -1,0 +1,9 @@
+<?php
+/** @var array $client */
+?>
+<h2>Delete Client</h2>
+<p>Are you sure you want to delete <strong><?= $this->escapeHtml($client['company_name']) ?></strong>?</p>
+<form method="post">
+    <button type="submit" class="btn btn-danger">Yes, delete</button>
+    <a class="btn btn-secondary" href="<?= $this->url('clients') ?>">Cancel</a>
+</form>
