@@ -65,7 +65,7 @@
                             </li>
                         <?php else: ?>
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="<?= $this->url('home') ?>">Home</a>
+                                <a class="nav-link active" aria-current="page" href="<?= $this->url('dashboard') ?>">Dashboard</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="<?= $this->url('logout') ?>">Sign out</a>
@@ -85,6 +85,59 @@
                 </p>
             </footer>
         </div>
+        <!-- Toast container -->
+        <div aria-live="polite" aria-atomic="true" class="position-relative">
+            <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+        </div>
+        <?php
+            $flashes = $this->flash();
+            if (! empty($flashes)):
+        ?>
+            <?php foreach ($flashes as $i => $msg):
+                $type = isset($msg['type']) ? strtolower($msg['type']) : 'info';
+                switch ($type) {
+                    case 'success':
+                        $headerClass = 'bg-success text-white';
+                        break;
+                    case 'danger':
+                    case 'error':
+                        $headerClass = 'bg-danger text-white';
+                        $type = 'danger';
+                        break;
+                    case 'warning':
+                        $headerClass = 'bg-warning text-dark';
+                        break;
+                    case 'info':
+                    default:
+                        $headerClass = 'bg-info text-dark';
+                        $type = 'info';
+                        break;
+                }
+            ?>
+                <div class="toast" role="status" aria-live="polite" aria-atomic="true" data-bs-delay="5000">
+                    <div class="toast-header <?= $this->escapeHtmlAttr($headerClass) ?> border-0">
+                        <strong class="me-auto"><?= $this->escapeHtml(ucfirst($type)) ?></strong>
+                        <small class="text-muted"></small>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        <?= $this->escapeHtml($msg['text']) ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            <?= $this->inlineScript()->prependScript(<<<'JS'
+                (function () {
+                    var toasts = document.querySelectorAll('.toast');
+                    toasts.forEach(function (t) {
+                        // move into container
+                        document.getElementById('toast-container').appendChild(t);
+                        var bsToast = new bootstrap.Toast(t);
+                        bsToast.show();
+                    });
+                })();
+            JS
+            ) ?>
+        <?php endif; ?>
         <?= $this->inlineScript()
             ->prependFile($this->basePath('js/bootstrap.min.js')) ?>
     </body>

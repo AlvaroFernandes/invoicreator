@@ -1,0 +1,14 @@
+<?php
+/**
+ * Dashboard view
+ * @var Laminas\View\Renderer\PhpRenderer $this
+ * @var array $identity
+ */
+?>
+<div class="row">
+    <div class="col-md-12">
+        <h1>Dashboard</h1>
+        <p>Welcome, <strong><?= $this->escapeHtml($this->identity()['name'] ?? ($identity['name'] ?? '')) ?></strong></p>
+        <p>Your email: <?= $this->escapeHtml($this->identity()['email'] ?? ($identity['email'] ?? '')) ?></p>
+    </div>
+</div>

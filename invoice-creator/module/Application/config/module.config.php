@@ -51,12 +51,23 @@ return [
                     ],
                 ],
             ],
+            'dashboard' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/dashboard',
+                    'defaults' => [
+                        'controller' => Controller\DashboardController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\AuthController::class  => InvokableFactory::class,
+            Controller\DashboardController::class => InvokableFactory::class,
         ],
     ],
     'service_manager' => [
@@ -66,15 +77,27 @@ return [
             // Auth service
             \Application\Service\AuthService::class => \Application\Factory\AuthServiceFactory::class,
             'Application\AuthService' => \Application\Factory\AuthServiceFactory::class,
+            // Provide Laminas AuthenticationServiceInterface compatibility
+            'AuthenticationService' => function ($container) {
+                $sm = $container;
+                $auth = $sm->has(\Application\Service\AuthService::class)
+                    ? $sm->get(\Application\Service\AuthService::class)
+                    : ($sm->has('Application\\AuthService') ? $sm->get('Application\\AuthService') : null);
+
+                return new \Application\Auth\AuthenticationServiceAdapter($auth);
+            },
+            \Laminas\Authentication\AuthenticationServiceInterface::class => function ($container) {
+                return $container->get('AuthenticationService');
+            },
         ],
     ],
     'view_helpers' => [
         'factories' => [
             'identity' => function ($container) {
-                $sm = $container->getServiceLocator() ?? $container;
+                $sm = $container;
                 $auth = $sm->has(\Application\Service\AuthService::class)
                     ? $sm->get(\Application\Service\AuthService::class)
-                    : ($sm->has('Application\AuthService') ? $sm->get('Application\\AuthService') : null);
+                    : ($sm->has('Application\\AuthService') ? $sm->get('Application\\AuthService') : null);
 
                 $getIdentity = function () use ($auth) {
                     if (! $auth) {
@@ -84,6 +107,9 @@ return [
                 };
 
                 return new \Application\View\Helper\Identity($getIdentity);
+            },
+            'flash' => function ($container) {
+                return new \Application\View\Helper\Flash();
             },
         ],
     ],

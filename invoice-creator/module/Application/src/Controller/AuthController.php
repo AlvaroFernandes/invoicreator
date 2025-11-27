@@ -29,10 +29,20 @@ class AuthController extends AbstractActionController
             $password = (string)($data['password'] ?? '');
 
             if ($auth->authenticate($email, $password)) {
-                return $this->redirect()->toRoute('home');
+                // set flash success and redirect
+                $flash = new \Laminas\Session\Container('flash');
+                $messages = $flash->offsetExists('messages') ? $flash->messages : [];
+                $messages[] = ['type' => 'success', 'text' => 'Signed in successfully'];
+                $flash->messages = $messages;
+
+                return $this->redirect()->toRoute('dashboard');
             }
 
-            $vm->setVariable('error', 'Invalid credentials');
+            // push error to flash so layout shows a toast
+            $flash = new \Laminas\Session\Container('flash');
+            $messages = $flash->offsetExists('messages') ? $flash->messages : [];
+            $messages[] = ['type' => 'danger', 'text' => 'Invalid credentials'];
+            $flash->messages = $messages;
         }
 
         return $vm;
@@ -55,9 +65,17 @@ class AuthController extends AbstractActionController
 
             try {
                 $auth->register($name, $email, $password);
+                $flash = new \Laminas\Session\Container('flash');
+                $messages = $flash->offsetExists('messages') ? $flash->messages : [];
+                $messages[] = ['type' => 'success', 'text' => 'Account created. Please sign in.'];
+                $flash->messages = $messages;
+
                 return $this->redirect()->toRoute('login');
             } catch (RuntimeException $e) {
-                $vm->setVariable('error', $e->getMessage());
+                $flash = new \Laminas\Session\Container('flash');
+                $messages = $flash->offsetExists('messages') ? $flash->messages : [];
+                $messages[] = ['type' => 'danger', 'text' => $e->getMessage()];
+                $flash->messages = $messages;
             }
         }
 
@@ -72,6 +90,11 @@ class AuthController extends AbstractActionController
             : $sm->get('Application\\AuthService');
 
         $auth->clearIdentity();
+
+        $flash = new \Laminas\Session\Container('flash');
+        $messages = $flash->offsetExists('messages') ? $flash->messages : [];
+        $messages[] = ['type' => 'success', 'text' => 'Signed out'];
+        $flash->messages = $messages;
 
         return $this->redirect()->toRoute('login');
     }
