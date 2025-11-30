@@ -1,0 +1,47 @@
+<?php
+/** @var array $jobs */
+?>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Jobs</h2>
+    <a href="<?= $this->url('jobs', ['action' => 'create']) ?>" class="btn btn-primary">New Job</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Client</th>
+            <th>Target</th>
+            <th>Location</th>
+            <th>Rate</th>
+            <th>Created</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($jobs as $j): ?>
+        <tr>
+            <td><?= $this->escapeHtml($j['title']) ?></td>
+            <td><?= $this->escapeHtml($j['company_name'] ?? 'Unknown') ?></td>
+            <td>
+                <?php if ($j['target_type'] === 'client'): ?>
+                    For client
+                <?php else: ?>
+                    <?= $this->escapeHtml($j['target_name'] ?? '') ?>
+                <?php endif; ?>
+            </td>
+            <td><?= $this->escapeHtml($j['location'] ?? '') ?></td>
+            <td>
+                <?php if (isset($j['rate']) && $j['rate'] !== null): ?>
+                    <?= $this->escapeHtml(number_format((float)$j['rate'], 2)) ?> / <?= $this->escapeHtml(ucfirst($j['rate_type'] ?? 'hourly')) ?>
+                <?php endif; ?>
+            </td>
+            <td><?= $this->escapeHtml($j['created_at']) ?></td>
+            <td class="text-end">
+                <a class="btn btn-sm btn-outline-secondary" href="<?= $this->url('jobs', ['action' => 'edit', 'id' => $j['id']]) ?>">Edit</a>
+                <a class="btn btn-sm btn-outline-danger" href="<?= $this->url('jobs', ['action' => 'delete', 'id' => $j['id']]) ?>">Delete</a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>

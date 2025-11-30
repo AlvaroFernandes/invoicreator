@@ -1,0 +1,9 @@
+<?php
+/** @var array $job */
+?>
+<h3>Delete Job</h3>
+<p>Are you sure you want to delete job "<?= $this->escapeHtml($job['title']) ?>"?</p>
+<form method="post">
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a class="btn btn-secondary" href="<?= $this->url('jobs') ?>">Cancel</a>
+</form>

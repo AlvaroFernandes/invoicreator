@@ -1,0 +1,7 @@
+<?php
+/** @var array|null $data */
+/** @var array $clients */
+/** @var array $errors */
+?>
+<h2>Create Job</h2>
+<?= $this->partial('application/jobs/form', ['data' => $data ?? null, 'clients' => $clients ?? [], 'errors' => $errors ?? []]) ?>

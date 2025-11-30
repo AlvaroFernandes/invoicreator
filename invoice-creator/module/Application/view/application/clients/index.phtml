@@ -25,7 +25,12 @@
             <td><?= $this->escapeHtml($c['company_contact'] ?? '') ?></td>
             <td><?= $this->escapeHtml($c['abn'] ?? '') ?></td>
             <td><?= $this->escapeHtml($c['contact_email'] ?? '') ?></td>
-            <td><?= $this->escapeHtml($c['contact_phone'] ?? '') ?></td>
+            <td>
+                <?= $this->escapeHtml($c['contact_phone'] ?? '') ?>
+                <?php if (!empty($c['contact_phone_type']) && in_array($c['contact_phone_type'], ['mobile','landline','service','email'])): ?>
+                    <span class="badge bg-secondary ms-2"><?= $this->escapeHtml(ucfirst($c['contact_phone_type'])) ?></span>
+                <?php endif; ?>
+            </td>
             <td><?= $this->escapeHtml($c['address'] ?? '') ?></td>
             <td class="text-end">
                 <a class="btn btn-sm btn-outline-secondary" href="<?= $this->url('clients', ['action' => 'edit', 'id' => $c['id']]) ?>">Edit</a>

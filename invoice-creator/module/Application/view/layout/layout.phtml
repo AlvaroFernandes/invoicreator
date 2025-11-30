@@ -55,20 +55,38 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <?php
+                        // Determine current path and compare with route URLs to set active class.
+                        $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+                        $clientsPath = parse_url($this->url('clients'), PHP_URL_PATH);
+                        $jobsPath = parse_url($this->url('jobs'), PHP_URL_PATH);
+                        $dashboardPath = parse_url($this->url('dashboard'), PHP_URL_PATH);
+                        $loginPath = parse_url($this->url('login'), PHP_URL_PATH);
+                        $registerPath = parse_url($this->url('register'), PHP_URL_PATH);
+
+                        $isClients = ($clientsPath !== null && strpos($currentPath, $clientsPath) === 0);
+                        $isJobs = ($jobsPath !== null && strpos($currentPath, $jobsPath) === 0);
+                        $isDashboard = ($dashboardPath !== null && strpos($currentPath, $dashboardPath) === 0);
+                        $isLogin = ($loginPath !== null && strpos($currentPath, $loginPath) === 0);
+                        $isRegister = ($registerPath !== null && strpos($currentPath, $registerPath) === 0);
+                    ?>
                     <ul class="navbar-nav ms-auto">
                         <?php if (empty($identity)): ?>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= $this->url('login') ?>">Sign in</a>
+                                <a class="nav-link <?= $isLogin ? 'active' : '' ?>" <?= $isLogin ? 'aria-current="page"' : '' ?> href="<?= $this->url('login') ?>">Sign in</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= $this->url('register') ?>">Sign up</a>
+                                <a class="nav-link <?= $isRegister ? 'active' : '' ?>" <?= $isRegister ? 'aria-current="page"' : '' ?> href="<?= $this->url('register') ?>">Sign up</a>
                             </li>
                         <?php else: ?>
                             <li class="nav-item">
-                                <a class="nav-link" href="<?= $this->url('clients') ?>">Clients</a>
+                                <a class="nav-link <?= $isClients ? 'active' : '' ?>" <?= $isClients ? 'aria-current="page"' : '' ?> href="<?= $this->url('clients') ?>">Clients</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="<?= $this->url('dashboard') ?>">Dashboard</a>
+                                <a class="nav-link <?= $isJobs ? 'active' : '' ?>" <?= $isJobs ? 'aria-current="page"' : '' ?> href="<?= $this->url('jobs') ?>">Jobs</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link <?= $isDashboard ? 'active' : '' ?>" <?= $isDashboard ? 'aria-current="page"' : '' ?> href="<?= $this->url('dashboard') ?>">Dashboard</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="<?= $this->url('logout') ?>">Sign out</a>

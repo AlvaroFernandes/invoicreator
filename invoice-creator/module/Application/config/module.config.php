@@ -75,6 +75,20 @@ return [
                     ],
                 ],
             ],
+            'jobs' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/jobs[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\JobsController::class,
+                        'action' => 'index',
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [
@@ -83,6 +97,7 @@ return [
             Controller\AuthController::class  => InvokableFactory::class,
             Controller\DashboardController::class => InvokableFactory::class,
             Controller\ClientsController::class => InvokableFactory::class,
+            Controller\JobsController::class => InvokableFactory::class,
         ],
     ],
     'service_manager' => [

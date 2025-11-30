@@ -1,0 +1,72 @@
+<?php
+/** @var array|null $data */
+/** @var array $clients */
+?>
+<form method="post">
+    <?php $errors = $this->vars()->offsetExists('errors') ? $this->vars()->offsetGet('errors') : []; ?>
+    <div class="mb-3">
+        <label class="form-label">Client</label>
+        <select name="client_id" class="form-select <?= isset($errors['client_id']) ? 'is-invalid' : '' ?>">
+            <option value="">-- Select client --</option>
+            <?php foreach ($clients as $c): ?>
+                <option value="<?= $this->escapeHtml($c['id']) ?>" <?= (isset($data['client_id']) && $data['client_id'] == $c['id']) ? 'selected' : '' ?>><?= $this->escapeHtml($c['company_name']) ?></option>
+            <?php endforeach; ?>
+        </select>
+        <?php if (!empty($errors['client_id'])): ?><div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['client_id']) ?></div><?php endif; ?>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Job Title</label>
+        <input name="title" class="form-control <?= isset($errors['title']) ? 'is-invalid' : '' ?>" value="<?= $this->escapeHtml($data['title'] ?? '') ?>">
+        <?php if (!empty($errors['title'])): ?><div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['title']) ?></div><?php endif; ?>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control"><?= $this->escapeHtml($data['description'] ?? '') ?></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Location</label>
+        <input name="location" class="form-control <?= isset($errors['location']) ? 'is-invalid' : '' ?>" value="<?= $this->escapeHtml($data['location'] ?? '') ?>">
+        <?php if (!empty($errors['location'])): ?><div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['location']) ?></div><?php endif; ?>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Rate</label>
+            <input name="rate" type="number" step="0.01" min="0" class="form-control <?= isset($errors['rate']) ? 'is-invalid' : '' ?>" value="<?= $this->escapeHtml($data['rate'] ?? '') ?>">
+            <?php if (!empty($errors['rate'])): ?><div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['rate']) ?></div><?php endif; ?>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Rate Type</label>
+            <select name="rate_type" class="form-select">
+                <option value="hourly" <?= (isset($data['rate_type']) && $data['rate_type'] === 'hourly') ? 'selected' : '' ?>>Hourly</option>
+                <option value="daily" <?= (isset($data['rate_type']) && $data['rate_type'] === 'daily') ? 'selected' : '' ?>>Daily</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Target</label>
+        <div>
+            <label class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="target_type" value="client" <?= (!isset($data['target_type']) || $data['target_type'] === 'client') ? 'checked' : '' ?>>
+                <span class="form-check-label">Client</span>
+            </label>
+            <label class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="target_type" value="client_client" <?= (isset($data['target_type']) && $data['target_type'] === 'client_client') ? 'checked' : '' ?>>
+                <span class="form-check-label">Client's Client</span>
+            </label>
+        </div>
+        <div class="mt-2">
+            <input name="target_name" class="form-control <?= isset($errors['target_name']) ? 'is-invalid' : '' ?>" placeholder="Client's client name (required if 'Client's Client' chosen)" value="<?= $this->escapeHtml($data['target_name'] ?? '') ?>">
+            <?php if (!empty($errors['target_name'])): ?><div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['target_name']) ?></div><?php endif; ?>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a class="btn btn-secondary" href="<?= $this->url('jobs') ?>">Cancel</a>
+    </div>
+</form>

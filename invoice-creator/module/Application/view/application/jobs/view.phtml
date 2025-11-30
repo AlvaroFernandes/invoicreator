@@ -1,0 +1,20 @@
+<?php
+/** @var array $job */
+?>
+<h2><?= $this->escapeHtml($job['title']) ?></h2>
+<?php // Show client name if available ?>
+<?php $clientName = $job['company_name'] ?? null; ?>
+<p><strong>Client:</strong> <?= $this->escapeHtml($clientName ?? $job['client_id']) ?></p>
+<p><strong>Target:</strong>
+    <?php if ($job['target_type'] === 'client'): ?>
+        For client
+    <?php else: ?>
+        <?= $this->escapeHtml($job['target_name'] ?? '') ?>
+    <?php endif; ?>
+</p>
+<p><?= nl2br($this->escapeHtml($job['description'] ?? '')) ?></p>
+<p><strong>Location:</strong> <?= $this->escapeHtml($job['location'] ?? '') ?></p>
+<?php if (isset($job['rate']) && $job['rate'] !== null): ?>
+    <p><strong>Rate:</strong> <?= $this->escapeHtml(number_format((float)$job['rate'], 2)) ?> / <?= $this->escapeHtml(ucfirst($job['rate_type'] ?? 'hourly')) ?></p>
+<?php endif; ?>
+<a class="btn btn-secondary" href="<?= $this->url('jobs') ?>">Back</a>

@@ -3,29 +3,48 @@
 /** @var int|null $id */
 ?>
 <form method="post">
+    <?php $errors = $this->vars()->offsetExists('errors') ? $this->vars()->offsetGet('errors') : []; ?>
     <div class="mb-3">
         <label class="form-label">Company Name</label>
-        <input name="company_name" class="form-control" required value="<?= $this->escapeHtml($data['company_name'] ?? '') ?>">
+        <input name="company_name" class="form-control <?= isset($errors['company_name']) ? 'is-invalid' : '' ?>" required value="<?= $this->escapeHtml($data['company_name'] ?? '') ?>">
+        <?php if (!empty($errors['company_name'])): ?>
+            <div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['company_name']) ?></div>
+        <?php endif; ?>
     </div>
     <div class="mb-3">
         <label class="form-label">Company Contact</label>
-        <input name="company_contact" class="form-control" value="<?= $this->escapeHtml($data['company_contact'] ?? '') ?>">
+        <input name="company_contact" class="form-control <?= isset($errors['company_contact']) ? 'is-invalid' : '' ?>" value="<?= $this->escapeHtml($data['company_contact'] ?? '') ?>">
+        <?php if (!empty($errors['company_contact'])): ?>
+            <div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['company_contact']) ?></div>
+        <?php endif; ?>
     </div>
     <div class="mb-3">
         <label class="form-label">ABN</label>
-        <input name="abn" class="form-control" value="<?= $this->escapeHtml($data['abn'] ?? '') ?>">
+        <input name="abn" class="form-control <?= isset($errors['abn']) ? 'is-invalid' : '' ?>" value="<?= $this->escapeHtml($data['abn'] ?? '') ?>">
+        <?php if (!empty($errors['abn'])): ?>
+            <div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['abn']) ?></div>
+        <?php endif; ?>
     </div>
     <div class="mb-3">
         <label class="form-label">Contact Email</label>
-        <input name="contact_email" type="email" class="form-control" value="<?= $this->escapeHtml($data['contact_email'] ?? '') ?>">
+        <input name="contact_email" type="email" class="form-control <?= isset($errors['contact_email']) ? 'is-invalid' : '' ?>" value="<?= $this->escapeHtml($data['contact_email'] ?? '') ?>">
+        <?php if (!empty($errors['contact_email'])): ?>
+            <div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['contact_email']) ?></div>
+        <?php endif; ?>
     </div>
     <div class="mb-3">
         <label class="form-label">Contact Phone</label>
-        <input name="contact_phone" class="form-control" value="<?= $this->escapeHtml($data['contact_phone'] ?? '') ?>">
+        <input name="contact_phone" class="form-control <?= isset($errors['contact_phone']) ? 'is-invalid' : '' ?>" value="<?= $this->escapeHtml($data['contact_phone'] ?? '') ?>">
+        <?php if (!empty($errors['contact_phone'])): ?>
+            <div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['contact_phone']) ?></div>
+        <?php endif; ?>
     </div>
     <div class="mb-3">
         <label class="form-label">Address</label>
-        <textarea name="address" class="form-control"><?= $this->escapeHtml($data['address'] ?? '') ?></textarea>
+        <textarea name="address" class="form-control <?= isset($errors['address']) ? 'is-invalid' : '' ?>"><?= $this->escapeHtml($data['address'] ?? '') ?></textarea>
+        <?php if (!empty($errors['address'])): ?>
+            <div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['address']) ?></div>
+        <?php endif; ?>
     </div>
     <div class="d-flex gap-2">
         <button class="btn btn-primary" type="submit"><?= isset($id) ? 'Save' : 'Create' ?></button>
