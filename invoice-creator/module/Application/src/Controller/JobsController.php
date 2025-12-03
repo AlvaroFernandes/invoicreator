@@ -29,7 +29,7 @@ class JobsController extends AbstractActionController
         return $auth;
     }
 
-    public function indexAction(): ViewModel
+    public function indexAction()
     {
         $authOrResponse = $this->ensureAuthenticated();
         if ($authOrResponse instanceof \Laminas\Http\Response) {
@@ -46,7 +46,7 @@ class JobsController extends AbstractActionController
         return new ViewModel(['jobs' => $jobs]);
     }
 
-    public function createAction(): ViewModel
+    public function createAction()
     {
         $authOrResponse = $this->ensureAuthenticated();
         if ($authOrResponse instanceof \Laminas\Http\Response) {
@@ -60,7 +60,7 @@ class JobsController extends AbstractActionController
         // Fetch clients for selection
         $clients = $conn->fetchAllAssociative('SELECT id, company_name FROM clients ORDER BY company_name');
 
-        if ($request->isPost()) {
+        if ($request instanceof \Laminas\Http\Request && $request->isPost()) {
             $post = $request->getPost()->toArray();
             $validation = $this->validateJobData($post);
             $row = $validation['row'];
@@ -82,7 +82,7 @@ class JobsController extends AbstractActionController
         return new ViewModel(['clients' => $clients]);
     }
 
-    public function editAction(): ViewModel
+    public function editAction()
     {
         $authOrResponse = $this->ensureAuthenticated();
         if ($authOrResponse instanceof \Laminas\Http\Response) {
@@ -101,7 +101,7 @@ class JobsController extends AbstractActionController
 
         $clients = $conn->fetchAllAssociative('SELECT id, company_name FROM clients ORDER BY company_name');
 
-        if ($request->isPost()) {
+        if ($request instanceof \Laminas\Http\Request && $request->isPost()) {
             $post = $request->getPost()->toArray();
             $validation = $this->validateJobData($post);
             $row = $validation['row'];
@@ -140,7 +140,7 @@ class JobsController extends AbstractActionController
         }
 
         $request = $this->getRequest();
-        if ($request->isPost()) {
+        if ($request instanceof \Laminas\Http\Request && $request->isPost()) {
             $conn->delete('jobs', ['id' => $id]);
             $flash = new \Laminas\Session\Container('flash');
             $messages = $flash->offsetExists('messages') ? $flash->messages : [];
@@ -163,6 +163,9 @@ class JobsController extends AbstractActionController
             'rate_type' => in_array($input['rate_type'] ?? 'hourly', ['hourly','daily'], true) ? $input['rate_type'] : 'hourly',
             'target_type' => in_array($input['target_type'] ?? 'client', ['client','client_client'], true) ? $input['target_type'] : 'client',
             'target_name' => trim((string)($input['target_name'] ?? '')),
+            'start_time' => isset($input['start_time']) && $input['start_time'] !== '' ? trim((string)$input['start_time']) : null,
+            'end_time' => isset($input['end_time']) && $input['end_time'] !== '' ? trim((string)$input['end_time']) : null,
+            'had_30min_break' => (!empty($input['had_30min_break']) && $input['had_30min_break'] !== '0') ? 1 : 0,
         ];
 
         $errors = [];
@@ -184,6 +187,24 @@ class JobsController extends AbstractActionController
         // location max length check
         if ($row['location'] !== '' && strlen($row['location']) > 255) {
             $errors['location'] = 'Location is too long';
+        }
+
+        // time format validation: accept HH:MM or HH:MM:SS
+        $timeRegex = '/^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/';
+        if ($row['start_time'] !== null && !preg_match($timeRegex, $row['start_time'])) {
+            $errors['start_time'] = 'Start time must be in HH:MM or HH:MM:SS format';
+        }
+        if ($row['end_time'] !== null && !preg_match($timeRegex, $row['end_time'])) {
+            $errors['end_time'] = 'End time must be in HH:MM or HH:MM:SS format';
+        }
+
+        // if both times provided, ensure end is after start
+        if ($row['start_time'] !== null && $row['end_time'] !== null) {
+            $startTs = strtotime($row['start_time']);
+            $endTs = strtotime($row['end_time']);
+            if ($startTs === false || $endTs === false || $endTs <= $startTs) {
+                $errors['time_range'] = 'End time must be later than start time';
+            }
         }
 
         return ['row' => $row, 'errors' => $errors];

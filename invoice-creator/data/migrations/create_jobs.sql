@@ -9,6 +9,9 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `rate_type` enum('hourly','daily') NOT NULL DEFAULT 'hourly',
   `target_type` varchar(20) NOT NULL DEFAULT 'client', -- 'client' or 'client_client'
   `target_name` varchar(255) DEFAULT NULL,
+  `start_time` time DEFAULT NULL,
+  `end_time` time DEFAULT NULL,
+  `had_30min_break` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),

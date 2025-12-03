@@ -47,6 +47,26 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Start Time</label>
+            <input name="start_time" type="time" class="form-control <?= isset($errors['start_time']) || isset($errors['time_range']) ? 'is-invalid' : '' ?>" value="<?= $this->escapeHtml($data['start_time'] ?? '') ?>">
+            <?php if (!empty($errors['start_time'])): ?><div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['start_time']) ?></div><?php endif; ?>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">End Time</label>
+            <input name="end_time" type="time" class="form-control <?= isset($errors['end_time']) || isset($errors['time_range']) ? 'is-invalid' : '' ?>" value="<?= $this->escapeHtml($data['end_time'] ?? '') ?>">
+            <?php if (!empty($errors['end_time'])): ?><div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['end_time']) ?></div><?php endif; ?>
+        </div>
+        <div class="col-md-4 mb-3 d-flex align-items-center">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="had_30min_break" id="had_30min_break" value="1" <?= (!empty($data['had_30min_break']) && $data['had_30min_break']) ? 'checked' : '' ?>>
+                <label class="form-check-label" for="had_30min_break">Had 30 min break</label>
+            </div>
+        </div>
+        <?php if (!empty($errors['time_range'])): ?><div class="invalid-feedback d-block"><?= $this->escapeHtml($errors['time_range']) ?></div><?php endif; ?>
+    </div>
+
     <div class="mb-3">
         <label class="form-label">Target</label>
         <div>
